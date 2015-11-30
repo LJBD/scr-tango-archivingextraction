@@ -13,7 +13,6 @@ class DatabaseExtractor(object):
     def get_all_attributes(self):
         self.cursor.execute('SELECT full_name from adt;')
         self.devices_list = [i[0] for i in self.cursor.fetchall()]
-        #print self.devices_list
         return self.devices_list
 
     def get_selected_attributes(self, reg_exp_filter):
@@ -55,10 +54,7 @@ class DatabaseExtractor(object):
         for i in xrange(1, len(times)):
             diffs.append((times[i] - times[i-1]).total_seconds())
         histogram_data = Counter(diffs)
-        pyplot.plot(histogram_data.keys(), histogram_data.values(), 'rs')
-        #pyplot.hist(diffs, bins=5)
-        pyplot.yscale('log')
-        pyplot.show()
+        return histogram_data
 
     def plot_selected_attrib_data_in_range(self, re_filter, start, end):
         attributes = self.get_selected_attributes(re_filter)
@@ -79,7 +75,12 @@ class DatabaseExtractor(object):
         attributes = self.get_selected_attributes(re_filter)
         dev_dict = self.get_attrib_ids(attributes)
         for key in dev_dict.keys():
-            self.calculate_time_diffs(dev_dict[key])
+            histogram_data = self.calculate_time_diffs(dev_dict[key])
+            pyplot.plot(histogram_data.keys(), histogram_data.values(), '.-', label=key,)
+        #pyplot.hist(diffs, bins=5)
+        pyplot.yscale('log')
+        pyplot.legend(bbox_to_anchor=(1.05, 1), loc=2, borderaxespad=0.)
+        pyplot.show()
 
 
 
