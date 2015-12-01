@@ -62,7 +62,7 @@ class DatabaseExtractor(object):
         fig = pyplot.figure()
         ax = fig.add_subplot(111)
         for key in dev_dict.keys():
-            columns = ['time', 'read_value']
+            columns = ['time', 'value']
             attr_values = self.get_attrib_values_between_dates(dev_dict[key], start, end, columns)
             ax.plot(attr_values[0], attr_values[1], label=key)
         pyplot.legend(bbox_to_anchor=(1.05, 1), loc=2, borderaxespad=0.)
@@ -88,7 +88,9 @@ def main():
     dbEx = DatabaseExtractor()
     start = '2015-11-18 09:00:00'
     end = '2015-11-18 16:00:00'
-    re_filter = re.compile('R1-C134/MAG/R1.*-PS.*/Current')
+    # re_filter = re.compile('R1-C134/MAG/R1.*-PS.*/Current')
+    # re_filter = re.compile('PLC/R1-02-03-VAC/REAL/F_R1_02.*TCO.*_R')
+    re_filter = re.compile('R1.*/VAC/.*IPCU.*/Pressure')
     dbEx.plot_selected_attrib_data_in_range(re_filter, start, end)
     dbEx.plot_time_diffs_histogram(re_filter)
 
