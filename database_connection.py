@@ -63,6 +63,7 @@ class DatabaseExtractor(object):
         ax = fig.add_subplot(111)
         for key in dev_dict.keys():
             columns = ['time', 'value']
+            # :TODO: Catch error with wrong column names (caused by read/read-write attributes)
             attr_values = self.get_attrib_values_between_dates(dev_dict[key], start, end, columns)
             ax.plot(attr_values[0], attr_values[1], label=key)
         pyplot.legend(bbox_to_anchor=(1.05, 1), loc=2, borderaxespad=0.)
@@ -83,7 +84,7 @@ class DatabaseExtractor(object):
         pyplot.show()
 
 
-
+# :TODO: Prepare a GUI for this!
 def main():
     dbEx = DatabaseExtractor()
     start = '2015-11-18 09:00:00'
