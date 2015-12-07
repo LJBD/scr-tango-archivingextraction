@@ -1,4 +1,5 @@
 import MySQLdb
+from _mysql_exceptions import ProgrammingError, OperationalError
 import re
 from collections import Counter
 from matplotlib import pyplot, dates
@@ -39,8 +40,14 @@ class DatabaseExtractor(object):
         columns_str = str(columns).strip('[').strip(']').replace("'", '')
         query = 'SELECT %s from %s where time > "%s" and time < "%s";' %\
                 (columns_str, table_name, start_date, end_date)
-        self.cursor.execute(query)
-        query_output = self.cursor.fetchall()
+        try:
+            self.cursor.execute(query)
+            query_output = self.cursor.fetchall()
+        except ProgrammingError as e:
+            print 'Can\'t get guery output for %s' % table_name
+            print e
+            query_output = [([0*i] for i in columns)]
+            print query_output
         return_data = []
         for i in xrange(len(columns)):
             data_for_column = [t[i] for t in query_output]
@@ -91,7 +98,9 @@ def main():
     end = '2015-11-18 16:00:00'
     # re_filter = re.compile('R1-C134/MAG/R1.*-PS.*/Current')
     # re_filter = re.compile('PLC/R1-02-03-VAC/REAL/F_R1_02.*TCO.*_R')
-    re_filter = re.compile('R1.*/VAC/.*IPCU.*/Pressure')
+    re_filter = re.compile('R1-SGD/VAC/.*IPCU.*/Pressure')
+    # re_filter = re.compile('R.*/RF/.*PAPCW.*/Rf.*')
+    print dbEx.get_selected_attributes(re_filter)
     dbEx.plot_selected_attrib_data_in_range(re_filter, start, end)
     dbEx.plot_time_diffs_histogram(re_filter)
 
