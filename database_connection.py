@@ -6,8 +6,8 @@ from matplotlib import pyplot, dates
 
 
 class DatabaseExtractor(object):
-    def __init__(self):
-        self.connection = MySQLdb.connect('localhost', 'root', 'solaris', 'tdb')
+    def __init__(self, host="localhost", username='root', userpass='solaris', database='tdb'):
+        self.connection = MySQLdb.connect(host, username, userpass, database)
         self.cursor = self.connection.cursor()
         self.get_all_attributes()
 
